@@ -49,7 +49,7 @@ trait TestTrait
         $this->assertEquals(400, $result->response()->getStatusCode());
     }
 
-    public function assertIsOk($result)
+    public function assertOK($result)
     {
         $this->assertTrue($result->isOK());
     }
