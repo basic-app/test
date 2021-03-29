@@ -54,7 +54,7 @@ trait TestTrait
         $this->assertTrue($result->isOK());
     }
 
-    public function assertStatusOk(array $data)
+    public function assertStatusOK(array $data)
     {
         $this->assertArrayHasKey('status', $data);
 
