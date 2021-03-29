@@ -54,4 +54,32 @@ trait TestTrait
         $this->assertTrue($result->isOK());
     }
 
+    public function assertStatusOk($data)
+    {
+        $this->assertArrayHasKey('status', $data);
+
+        $this->assertEquals('OK', $data['status']);
+    }
+
+    public function assertStatusError($data)
+    {
+        $this->assertArrayHasKey('status', $data);
+
+        $this->assertEquals('ERROR', $data['status']);
+    }
+
+    public function assertStatusCreated($data)
+    {
+        $this->assertArrayHasKey('status', $data);
+
+        $this->assertEquals('CREATED', $data['status']);
+    }
+
+    public function assertStatusUpdated($data)
+    {
+        $this->assertArrayHasKey('status', $data);
+
+        $this->assertEquals('UPDATED', $data['status']);
+    }
+
 }
