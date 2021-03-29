@@ -96,4 +96,20 @@ trait TestTrait
         }
     }
 
+    public function assertValidationError(array $data, string $error, ?string $field = null)
+    {
+        $this->assertArrayHasKey('validationErrors', $data);
+
+        if ($field)
+        {
+            $this->assertArrayHasKey($field, $data['validationErrors']);
+
+            $this->assertEquals($error, $data['validationErrors'][$field]);
+        }
+        else
+        {
+            $this->assertContains($error, $data['validationErrors']);
+        }
+    }
+
 }
