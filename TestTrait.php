@@ -82,6 +82,13 @@ trait TestTrait
         $this->assertEquals('UPDATED', $data['status']);
     }
 
+    public function assertStatusDeleted(array $data)
+    {
+        $this->assertArrayHasKey('status', $data);
+
+        $this->assertEquals('DELETED', $data['status']);
+    }
+
     public function assertData(array $data, string $field)
     {
         $this->assertArrayHasKey('data', $data);
