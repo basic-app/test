@@ -44,7 +44,7 @@ trait TestTrait
         return json_decode($json, true, 512, JSON_THROW_ON_ERROR); // php 7.3
     }
 
-    public function assertStatusCode($code, $result)
+    public function assertStatusCode(int $code, $result)
     {
         $this->assertEquals(400, $result->response()->getStatusCode());
     }
