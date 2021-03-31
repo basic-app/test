@@ -119,4 +119,11 @@ trait TestTrait
         }
     }
 
+    public function assertError($data, $error)
+    {
+        $this->assertArrayHasKey('error', $data);
+
+        $this->assertEquals($data['error'], $error);
+    }
+
 }
