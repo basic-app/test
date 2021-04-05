@@ -70,7 +70,7 @@ trait TestTrait
         return $this->withRequest($request);
     }
 
-    public function withGET(array $post)
+    public function withGET(array $post, bool $append = false)
     {
         $body = null;
 
