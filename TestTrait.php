@@ -16,6 +16,32 @@ use CodeIgniter\HTTP\Files\UploadedFile;
 trait TestTrait
 {
 
+    public function storageFile(string $name, ?string $source = null)
+    {
+        $config = config('BasicApp\Storage\Config\Storage');
+
+        $this->assertNotEmpty($config);
+
+        if ($source)
+        {
+            $storage = service('storage');
+
+            $this->assertNotEmpty($storage);
+
+            $storage->writeFile($name, $source);
+        }
+
+        $filename = FCPATH . $config->basePath . '/' . $name;
+
+        return [
+            'name' => basename($filename),
+            'type' => mime_content_type($filename),
+            'tmp_name' => $filename,
+            'error' => 0,
+            'size' => filesize($filename)
+        ];
+    }
+
     public function withJSON($body)
     {
         return $this->withBody(json_encode($body));

@@ -13,6 +13,7 @@ use CodeIgniter\HTTP\Exceptions\HTTPException;
 use CodeIgniter\Test\ControllerResponse;
 use CodeIgniter\HTTP\Response;
 use CodeIgniter\Test\ControllerTester;
+use Webmozart\Assert\Assert;
 
 class ControllerTestCase extends \Tests\Support\DatabaseTestCase
 {
@@ -29,6 +30,12 @@ class ControllerTestCase extends \Tests\Support\DatabaseTestCase
 
         if ($config)
         {
+            helper(['file']);
+
+            $result = delete_files(FCPATH . 'test-storage');
+
+            Assert::true($result);
+
             $config->basePath = 'test-storage';
         }
     }
