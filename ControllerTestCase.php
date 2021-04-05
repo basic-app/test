@@ -21,6 +21,18 @@ class ControllerTestCase extends \Tests\Support\DatabaseTestCase
 
     use TestTrait;
 
+    public function setUp() : void
+    {
+        parent::setUp();
+
+        $config = config('BasicApp\Storage\Config\Storage');
+
+        if ($config)
+        {
+            $config->basePath = 'test-storage';
+        }
+    }
+
     /**
      * Runs the specified method on the controller and returns the results.
      *
