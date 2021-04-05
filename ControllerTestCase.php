@@ -86,7 +86,6 @@ class ControllerTestCase extends \Tests\Support\DatabaseTestCase
             }
         }
 
-
         // If not response code has been sent, assume a success
         if (empty($result->response()->getStatusCode()))
         {

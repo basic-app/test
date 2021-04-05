@@ -19,7 +19,7 @@ trait TestTrait
         return $this->withBody(json_encode($body));
     }
 
-    public function withPost(array $post)
+    public function withPOST(array $post)
     {
         $body = null;
 
@@ -31,6 +31,22 @@ trait TestTrait
         );
 
         $request->setGlobal('post', $post);        
+
+        return $this->withRequest($request);
+    }
+
+    public function withGET(array $post)
+    {
+        $body = null;
+
+        $request = new IncomingRequest(
+            new AppConfig,
+            new URI($this->appConfig->baseURL ?? 'http://example.com/'),
+            $body,
+            new UserAgent
+        );
+
+        $request->setGlobal('get', $post);        
 
         return $this->withRequest($request);
     }
