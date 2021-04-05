@@ -6,10 +6,12 @@
  */
 namespace BasicApp\Test;
 
+use ReflectionClass;
 use Config\App as AppConfig;
 use CodeIgniter\HTTP\IncomingRequest;
 use CodeIgniter\HTTP\URI;
 use CodeIgniter\HTTP\UserAgent;
+use CodeIgniter\HTTP\Files\UploadedFile;
 
 trait TestTrait
 {
@@ -19,16 +21,49 @@ trait TestTrait
         return $this->withBody(json_encode($body));
     }
 
-    public function withPOST(array $post)
+    public function withFILES(array $files, bool $append = false)
     {
         $body = null;
 
-        $request = new IncomingRequest(
-            new AppConfig,
-            new URI($this->appConfig->baseURL ?? 'http://example.com/'),
-            $body,
-            new UserAgent
-        );
+        $request = $this->request;
+
+        if (!$request || !$append)
+        {
+            $request = new IncomingRequest(
+                new AppConfig,
+                new URI($this->appConfig->baseURL ?? 'http://example.com/'),
+                $body,
+                new UserAgent
+            );            
+        }
+
+        $collection = new FileCollection;
+
+        $collection->populateFromArray($files);
+
+        $reflection = new ReflectionClass($request);
+        $property = $reflection->getProperty('files');
+        $property->setAccessible(true);
+        $property->setValue($request, $collection);
+
+        return $this->withRequest($request);
+    }
+
+    public function withPOST(array $post, bool $append = false)
+    {
+        $body = null;
+
+        $request = $this->request;
+
+        if (!$request || !$append)
+        {
+            $request = new IncomingRequest(
+                new AppConfig,
+                new URI($this->appConfig->baseURL ?? 'http://example.com/'),
+                $body,
+                new UserAgent
+            );            
+        }
 
         $request->setGlobal('post', $post);        
 
@@ -39,12 +74,17 @@ trait TestTrait
     {
         $body = null;
 
-        $request = new IncomingRequest(
-            new AppConfig,
-            new URI($this->appConfig->baseURL ?? 'http://example.com/'),
-            $body,
-            new UserAgent
-        );
+        $request = $this->request;
+
+        if (!$request || !$append)
+        {
+            $request = new IncomingRequest(
+                new AppConfig,
+                new URI($this->appConfig->baseURL ?? 'http://example.com/'),
+                $body,
+                new UserAgent
+            );            
+        }
 
         $request->setGlobal('get', $post);        
 
