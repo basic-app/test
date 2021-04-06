@@ -8,6 +8,8 @@ namespace BasicApp\Test;
 
 use ReflectionClass;
 use Config\App as AppConfig;
+use BasicApp\Storage\Config\Storage as StorageConfig;
+use BasicApp\Uploaded\Config\Uploaded as UploadedConfig;
 use CodeIgniter\HTTP\IncomingRequest;
 use CodeIgniter\HTTP\URI;
 use CodeIgniter\HTTP\UserAgent;
@@ -16,22 +18,52 @@ use CodeIgniter\HTTP\Files\UploadedFile;
 trait TestTrait
 {
 
-    public function storageFile(string $name, ?string $source = null)
+    public function uploadFile(string $source, string $name = null)
     {
-        $config = config('BasicApp\Storage\Config\Storage');
+        if (!$name)
+        {
+            $name = basename($source);
+        }
+
+        $config = config(UploadedConfig::class);
 
         $this->assertNotEmpty($config);
 
-        if ($source)
+        $storage = service('uploaded');
+
+        $this->assertNotEmpty($storage);
+
+        $storage->writeFile($name, $source);
+
+        $filename = $storage->path($name);
+
+        return [
+            'name' => basename($filename),
+            'type' => mime_content_type($filename),
+            'tmp_name' => $filename,
+            'error' => 0,
+            'size' => filesize($filename)
+        ];
+    }
+
+    public function storageFile(string $source, string $name = null)
+    {
+        if (!$name)
         {
-            $storage = service('storage');
-
-            $this->assertNotEmpty($storage);
-
-            $storage->writeFile($name, $source);
+            $name = basename($source);
         }
 
-        $filename = FCPATH . $config->basePath . '/' . $name;
+        $config = config(StorageConfig::class);
+
+        $this->assertNotEmpty($config);
+
+        $storage = service('storage');
+
+        $this->assertNotEmpty($storage);
+
+        $storage->writeFile($name, $source);
+
+        $filename = $storage->path($name);
 
         return [
             'name' => basename($filename),
