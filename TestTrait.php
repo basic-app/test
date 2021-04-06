@@ -44,6 +44,8 @@ trait TestTrait
 
     public function withJSON($body)
     {
+        $this->request = null;
+
         return $this->withBody(json_encode($body));
     }
 
