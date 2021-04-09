@@ -14,6 +14,7 @@ use CodeIgniter\HTTP\IncomingRequest;
 use CodeIgniter\HTTP\URI;
 use CodeIgniter\HTTP\UserAgent;
 use CodeIgniter\HTTP\Files\UploadedFile;
+use CodeIgniter\Exceptions\PageNotFoundException;
 
 trait TestTrait
 {
@@ -240,6 +241,11 @@ trait TestTrait
         $this->assertArrayHasKey('error', $data);
 
         $this->assertEquals($data['error'], $error);
+    }
+
+    public function expectPageNotFoundException()
+    {
+        $this->expectException(PageNotFoundException::class);
     }
 
 }
