@@ -76,17 +76,18 @@ trait TestTrait
         ];
     }
 
-    public function withJSON($body)
+    public function withJSON($body, bool $append = false)
     {
-        $this->request = null;
+        if (!$append)
+        {
+            $this->request = null;
+        }
 
         return $this->withBody(json_encode($body));
     }
 
     public function withFILES(array $files, bool $append = false)
     {
-        $body = null;
-
         $request = $this->request;
 
         if (!$request || !$append)
@@ -94,7 +95,7 @@ trait TestTrait
             $request = new IncomingRequest(
                 new AppConfig,
                 new URI($this->appConfig->baseURL ?? 'http://example.com/'),
-                $body,
+                $this->body,
                 new UserAgent
             );            
         }
@@ -113,8 +114,6 @@ trait TestTrait
 
     public function withPOST(array $post, bool $append = false)
     {
-        $body = null;
-
         $request = $this->request;
 
         if (!$request || !$append)
@@ -122,7 +121,7 @@ trait TestTrait
             $request = new IncomingRequest(
                 new AppConfig,
                 new URI($this->appConfig->baseURL ?? 'http://example.com/'),
-                $body,
+                $this->body,
                 new UserAgent
             );            
         }
@@ -134,8 +133,6 @@ trait TestTrait
 
     public function withGET(array $post, bool $append = false)
     {
-        $body = null;
-
         $request = $this->request;
 
         if (!$request || !$append)
@@ -143,7 +140,7 @@ trait TestTrait
             $request = new IncomingRequest(
                 new AppConfig,
                 new URI($this->appConfig->baseURL ?? 'http://example.com/'),
-                $body,
+                $this->body,
                 new UserAgent
             );            
         }
