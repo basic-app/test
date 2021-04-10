@@ -16,6 +16,7 @@ use CodeIgniter\HTTP\UserAgent;
 use CodeIgniter\HTTP\Files\UploadedFile;
 use CodeIgniter\Exceptions\PageNotFoundException;
 use Webmozart\Assert\InvalidArgumentException;
+use CodeIgniter\Security\Exceptions\SecurityException;
 
 trait TestTrait
 {
@@ -249,6 +250,11 @@ trait TestTrait
     public function expectInvalidArgumentException()
     {
         $this->expectException(InvalidArgumentException::class);
+    }
+
+    public function expectSecurityException()
+    {
+        $this->expectException(SecurityException::class);
     }
 
 }
