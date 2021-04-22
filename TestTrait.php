@@ -17,6 +17,7 @@ use CodeIgniter\HTTP\Files\UploadedFile;
 use CodeIgniter\Exceptions\PageNotFoundException;
 use Webmozart\Assert\InvalidArgumentException;
 use CodeIgniter\Security\Exceptions\SecurityException;
+use App\Models\MailerLog as MailerLogModel;
 
 trait TestTrait
 {
@@ -255,6 +256,45 @@ trait TestTrait
     public function expectSecurityException()
     {
         $this->expectException(SecurityException::class);
+    }
+
+    public function assertMailerLog($subject = null, $to = null)
+    {
+        $model = MailerLogModel::model();
+
+        if (is_array($subject))
+        {
+            $message = implode('; ', $subject);
+
+            $model->where($subject);
+        }
+        else
+        {
+            $message = '';
+
+            if ($subject)
+            {
+                $model->subject('You win!');
+            
+                $message = $subject;
+            }
+
+            if ($to)
+            {
+                $model->to($to);
+
+                if ($message)
+                {
+                    $message .= '; To: ';
+                }
+
+                $message .= $to; 
+            }
+        }
+
+        $count = $model->count();
+
+        $this->assertEquals(1, $count, 'Mail not found: ' . $message);
     }
 
 }
