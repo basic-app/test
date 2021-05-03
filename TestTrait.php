@@ -274,7 +274,7 @@ trait TestTrait
 
             if ($subject)
             {
-                $model->subject('You win!');
+                $model->subject($subject);
             
                 $message = $subject;
             }
@@ -294,7 +294,7 @@ trait TestTrait
 
         $count = $model->count();
 
-        $this->assertEquals(1, $count, 'Mail not found: ' . $message);
+        $this->assertEquals(1, $count, 'Message not found: ' . $message);
     }
 
 }
