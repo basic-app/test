@@ -301,4 +301,21 @@ trait TestTrait
         $this->assertEquals(1, $count, 'Message not found: ' . $message);
     }
 
+    public function assertArrayValues(array $values, array $array, $key = null)
+    {
+        if ($key)
+        {
+            $this->assertArrayHasKey($key, $array);
+
+            $array = $array[$key];
+        }
+
+        foreach($values as $k => $v)
+        {
+            $this->assertArrayHasKey($k, $array);
+
+            $this->assertEquals($v, $array[$k]);
+        }
+    }
+
 }
