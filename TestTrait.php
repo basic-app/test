@@ -114,7 +114,7 @@ trait TestTrait
         return $this->withRequest($request);
     }
 
-    public function withPOST(array $post, bool $append = false)
+    public function withPOST(array $data, bool $append = false)
     {
         $request = $this->request;
 
@@ -128,12 +128,14 @@ trait TestTrait
             );            
         }
 
-        $request->setGlobal('post', $post);        
+        $_POST = $data;
+
+        $request->setGlobal('post', $data);        
 
         return $this->withRequest($request);
     }
 
-    public function withGET(array $post, bool $append = false)
+    public function withGET(array $data, bool $append = false)
     {
         $request = $this->request;
 
@@ -147,7 +149,9 @@ trait TestTrait
             );            
         }
 
-        $request->setGlobal('get', $post);        
+        $_GET = $data;
+
+        $request->setGlobal('get', $data);
 
         return $this->withRequest($request);
     }
