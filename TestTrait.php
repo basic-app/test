@@ -14,7 +14,6 @@ use CodeIgniter\HTTP\IncomingRequest;
 use CodeIgniter\HTTP\URI;
 use CodeIgniter\HTTP\UserAgent;
 use CodeIgniter\HTTP\Files\UploadedFile;
-use CodeIgniter\Exceptions\PageNotFoundException;
 use Webmozart\Assert\InvalidArgumentException;
 use CodeIgniter\Security\Exceptions\SecurityException;
 use App\Models\MailerLog as MailerLogModel;
@@ -78,18 +77,18 @@ trait TestTrait
         ];
     }
 
-    public function withJSON($body, bool $append = false)
+    public function withJSON($body)
     {
-        if (!$append)
-        {
-            $this->request = null;
-        }
+        $this->withBody(json_encode($body));
 
-        return $this->withBody(json_encode($body));
+        $this->request->setBody($this->body);
+
+        return $this;
     }
 
-    public function withFILES(array $files, bool $append = false)
+    public function withFILES(array $files/*, bool $append = false*/)
     {
+        /*
         $request = $this->request;
 
         if (!$request || !$append)
@@ -101,62 +100,39 @@ trait TestTrait
                 new UserAgent
             );            
         }
+        */
 
         $collection = new FileCollection;
 
         $collection->populateFromArray($files);
 
-        $reflection = new ReflectionClass($request);
+        $reflection = new ReflectionClass($this->request);
         $property = $reflection->getProperty('files');
         $property->setAccessible(true);
-        $property->setValue($request, $collection);
+        $property->setValue($this->request, $collection);
 
         return $this->withRequest($request);
     }
 
-    public function withPOST(array $data, bool $append = false)
+    public function withPOST(array $data/*, bool $append = false*/)
     {
-        $request = $this->request;
-
-        if (!$request || !$append)
-        {
-            $request = new IncomingRequest(
-                new AppConfig,
-                new URI($this->appConfig->baseURL ?? 'http://example.com/'),
-                $this->body,
-                new UserAgent
-            );            
-        }
+        $this->request->setGlobal('post', $data);
 
         $_POST = $data;
 
-        $request->setGlobal('post', $data);        
-
-        return $this->withRequest($request);
+        return $this;
     }
 
-    public function withGET(array $data, bool $append = false)
+    public function withGET(array $data)
     {
-        $request = $this->request;
-
-        if (!$request || !$append)
-        {
-            $request = new IncomingRequest(
-                new AppConfig,
-                new URI($this->appConfig->baseURL ?? 'http://example.com/'),
-                $this->body,
-                new UserAgent
-            );            
-        }
+        $this->request->setGlobal('get', $data);
 
         $_GET = $data;
 
-        $request->setGlobal('get', $data);
-
-        return $this->withRequest($request);
+        return $this;
     }
 
-    public function getJSON($result)
+    public function getJSON(\CodeIgniter\Test\TestResponse $result)
     {
         $json = $result->response()->getJSON();
 
@@ -165,9 +141,9 @@ trait TestTrait
         return json_decode($json, true, 512, JSON_THROW_ON_ERROR); // php 7.3
     }
 
-    public function assertStatusCode(int $code, $result)
+    public function assertStatusCode(int $code, \CodeIgniter\Test\TestResponse $testResponse)
     {
-        $this->assertEquals(400, $result->response()->getStatusCode());
+        $this->assertEquals($code, $testResponse->response()->getStatusCode());
     }
 
     public function assertOK($result)
@@ -187,6 +163,13 @@ trait TestTrait
         $this->assertArrayHasKey('status', $data);
 
         $this->assertEquals('ERROR', $data['status']);
+    }
+
+    public function assertStatusValidationError(array $data)
+    {
+        $this->assertArrayHasKey('status', $data);
+
+        $this->assertEquals('VALIDATION_ERROR', $data['status']);
     }
 
     public function assertStatusCreated(array $data)
@@ -247,11 +230,6 @@ trait TestTrait
         $this->assertEquals($data['error'], $error);
     }
 
-    public function expectPageNotFoundException()
-    {
-        $this->expectException(PageNotFoundException::class);
-    }
-
     public function expectInvalidArgumentException()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -261,6 +239,25 @@ trait TestTrait
     {
         $this->expectException(SecurityException::class);
     }
+
+    public function assertArrayValues(array $values, array $array, $key = null)
+    {
+        if ($key)
+        {
+            $this->assertArrayHasKey($key, $array);
+
+            $array = $array[$key];
+        }
+
+        foreach($values as $k => $v)
+        {
+            $this->assertArrayHasKey($k, $array);
+
+            $this->assertEquals($v, $array[$k]);
+        }
+    }
+
+    // TEMPORARY HERE
 
     public function assertMailerLog($subject = null, $to = null)
     {
@@ -299,23 +296,6 @@ trait TestTrait
         $count = $model->count();
 
         $this->assertEquals(1, $count, 'Message not found: ' . $message);
-    }
-
-    public function assertArrayValues(array $values, array $array, $key = null)
-    {
-        if ($key)
-        {
-            $this->assertArrayHasKey($key, $array);
-
-            $array = $array[$key];
-        }
-
-        foreach($values as $k => $v)
-        {
-            $this->assertArrayHasKey($k, $array);
-
-            $this->assertEquals($v, $array[$k]);
-        }
     }
 
 }
