@@ -293,7 +293,7 @@ trait TestTrait
             }
         }
 
-        $count = $model->count();
+        $count = $model->countAllResults();
 
         $this->assertEquals(1, $count, 'Message not found: ' . $message);
     }
