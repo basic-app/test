@@ -15,6 +15,7 @@ use CodeIgniter\HTTP\Files\UploadedFile;
 use Webmozart\Assert\InvalidArgumentException;
 use Webmozart\Assert\Assert;
 use CodeIgniter\Security\Exceptions\SecurityException;
+use CodeIgniter\Exceptions\PageNotFoundException;
 use App\Models\MailerLog as MailerLogModel;
 
 trait TestTrait
@@ -176,6 +177,11 @@ trait TestTrait
     public function expectSecurityException()
     {
         $this->expectException(SecurityException::class);
+    }
+
+    public function expectPageNotFoundException()
+    {
+        $this->expectException(PageNotFoundException::class);
     }
 
     public function assertArrayValues(array $values, array $array, $key = null)
