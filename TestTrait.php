@@ -141,11 +141,6 @@ trait TestTrait
         return json_decode($json, true, 512, JSON_THROW_ON_ERROR); // php 7.3
     }
 
-    public function assertStatusCode(int $code, \CodeIgniter\Test\TestResponse $testResponse)
-    {
-        $this->assertEquals($code, $testResponse->response()->getStatusCode());
-    }
-
     public function assertOK($result)
     {
         $this->assertTrue($result->isOK());
@@ -296,6 +291,11 @@ trait TestTrait
         $count = $model->countAllResults();
 
         $this->assertEquals(1, $count, 'Message not found: ' . $message);
+    }
+
+    public function assertStatusCode(int $code, \CodeIgniter\HTTP\Response $response)
+    {
+        $this->assertEquals($code, $response->getStatusCode());
     }
 
 }
