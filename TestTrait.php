@@ -8,74 +8,17 @@ namespace BasicApp\Test;
 
 use ReflectionClass;
 use Config\App as AppConfig;
-use BasicApp\Storage\Config\Storage as StorageConfig;
-use BasicApp\Uploaded\Config\Uploaded as UploadedConfig;
 use CodeIgniter\HTTP\IncomingRequest;
 use CodeIgniter\HTTP\URI;
 use CodeIgniter\HTTP\UserAgent;
 use CodeIgniter\HTTP\Files\UploadedFile;
 use Webmozart\Assert\InvalidArgumentException;
+use Webmozart\Assert\Assert;
 use CodeIgniter\Security\Exceptions\SecurityException;
 use App\Models\MailerLog as MailerLogModel;
 
 trait TestTrait
 {
-
-    public function uploadFile(string $source, string $name = null)
-    {
-        if (!$name)
-        {
-            $name = basename($source);
-        }
-
-        $config = config(UploadedConfig::class);
-
-        $this->assertNotEmpty($config);
-
-        $storage = service('uploaded');
-
-        $this->assertNotEmpty($storage);
-
-        $storage->writeFile($name, $source);
-
-        $filename = $storage->path($name);
-
-        return [
-            'name' => basename($filename),
-            'type' => mime_content_type($filename),
-            'tmp_name' => $filename,
-            'error' => 0,
-            'size' => filesize($filename)
-        ];
-    }
-
-    public function storageFile(string $source, string $name = null)
-    {
-        if (!$name)
-        {
-            $name = basename($source);
-        }
-
-        $config = config(StorageConfig::class);
-
-        $this->assertNotEmpty($config);
-
-        $storage = service('storage');
-
-        $this->assertNotEmpty($storage);
-
-        $storage->writeFile($name, $source);
-
-        $filename = $storage->path($name);
-
-        return [
-            'name' => basename($filename),
-            'type' => mime_content_type($filename),
-            'tmp_name' => $filename,
-            'error' => 0,
-            'size' => filesize($filename)
-        ];
-    }
 
     public function withJSON($body)
     {
@@ -111,7 +54,7 @@ trait TestTrait
         $property->setAccessible(true);
         $property->setValue($this->request, $collection);
 
-        return $this->withRequest($request);
+        return $this->withRequest($this->request);
     }
 
     public function withPOST(array $data/*, bool $append = false*/)

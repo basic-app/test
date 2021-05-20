@@ -14,9 +14,15 @@ use CodeIgniter\Test\ControllerResponse;
 use CodeIgniter\HTTP\Response;
 use CodeIgniter\Test\ControllerTestTrait;
 use Webmozart\Assert\Assert;
+use BasicApp\Uploaded\UploadedTestTrait;
+use BasicApp\Storage\StorageTestTrait;
 
 class ControllerTestCase extends \Tests\Support\DatabaseTestCase
 {
+
+    use UploadedTestTrait;
+
+    use StorageTestTrait;
 
     use ControllerTestTrait;
 
@@ -24,33 +30,20 @@ class ControllerTestCase extends \Tests\Support\DatabaseTestCase
 
     public function setUp() : void
     {
+        $this->setUpUploaded();
+
+        $this->setUpStorage();
+
         parent::setUp();
+    }
 
-        $config = config('BasicApp\Storage\Config\Storage');
+    public function tearDown() : void
+    {
+        $this->tearDownUploaded();
 
-        if ($config)
-        {
-            helper(['file']);
+        $this->tearDownStorage();
 
-            $result = delete_files(FCPATH . 'test-storage');
-
-            Assert::true($result);
-
-            $config->basePath = 'test-storage';
-        }
-
-        $config = config('BasicApp\Uploaded\Config\Uploaded');
-
-        if ($config)
-        {
-            helper(['file']);
-
-            $result = delete_files(FCPATH . 'test-uploaded');
-
-            Assert::true($result);
-
-            $config->basePath = 'test-uploaded';
-        }
+        parent::tearDown();
     }
 
 }
