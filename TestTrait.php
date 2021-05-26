@@ -78,14 +78,10 @@ trait TestTrait
 
     public function getJSON(\CodeIgniter\Test\TestResponse $result)
     {
-        $json = $result->response()->getJSON();
-
-        $this->assertNotEmpty($json);
-
-        return json_decode($json, true, 512, JSON_THROW_ON_ERROR); // php 7.3
+        return $this->getResponseJSON($result->response());
     }
 
-    public function responseJSON(\CodeIgniter\HTTP\Response $response)
+    public function getResponseJSON(\CodeIgniter\HTTP\Response $response)
     {
         $json = $response->getJSON();
 
