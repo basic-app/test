@@ -85,6 +85,15 @@ trait TestTrait
         return json_decode($json, true, 512, JSON_THROW_ON_ERROR); // php 7.3
     }
 
+    public function responseJSON(\CodeIgniter\HTTP\Response $response)
+    {
+        $json = $response->getJSON();
+
+        $this->assertNotEmpty($json);
+
+        return json_decode($json, true, 512, JSON_THROW_ON_ERROR); // php 7.3
+    }
+
     public function assertOK($result)
     {
         $this->assertTrue($result->isOK());
