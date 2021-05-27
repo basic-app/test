@@ -78,10 +78,10 @@ trait TestTrait
 
     public function getJSON(\CodeIgniter\Test\TestResponse $result)
     {
-        return $this->getResponseJSON($result->response());
+        return $this->responseJSON($result->response());
     }
 
-    public function getResponseJSON(\CodeIgniter\HTTP\Response $response)
+    public function responseJSON(\CodeIgniter\HTTP\Response $response)
     {
         $json = $response->getJSON();
 
