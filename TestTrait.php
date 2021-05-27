@@ -252,4 +252,11 @@ trait TestTrait
         $this->assertEquals(1, $count, 'Message not found: ' . $message);
     }
 
+    // DEPRECATED
+
+    public function assertStatusCode(int $code, \CodeIgniter\HTTP\Response $response)
+    {
+        return $this->assertResponseCode($code, $response);
+    }
+
 }
