@@ -81,11 +81,16 @@ trait TestTrait
         return $this->responseJSON($result->response());
     }
 
+    public function assertResponseCode(int $code, \CodeIgniter\HTTP\Response $response)
+    {
+        $this->assertEquals($code, (int) $response->getStatusCode(), $response->getReason());
+    }
+
     public function responseJSON(\CodeIgniter\HTTP\Response $response)
     {
-        $json = $response->getJSON();
+        $this->assertNotEmpty($response->getBody());        
 
-        $this->assertNotEmpty($json);
+        $json = $response->getJSON();
 
         return json_decode($json, true, 512, JSON_THROW_ON_ERROR); // php 7.3
     }
@@ -245,11 +250,6 @@ trait TestTrait
         $count = $model->countAllResults();
 
         $this->assertEquals(1, $count, 'Message not found: ' . $message);
-    }
-
-    public function assertStatusCode(int $code, \CodeIgniter\HTTP\Response $response)
-    {
-        $this->assertEquals($code, $response->getStatusCode());
     }
 
 }
