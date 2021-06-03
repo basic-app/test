@@ -194,6 +194,16 @@ trait TestTrait
         $this->expectException(PageNotFoundException::class);
     }
 
+    public function assertArrayEquals(array $array, array $data)
+    {
+        foreach($array as $key => $value)
+        {
+            $this->assertArrayHasKey($key, $data);
+
+            $this->assertEquals($value, $data[$key]);
+        }
+    }
+
     public function assertArrayValues(array $values, array $array, $key = null)
     {
         if ($key)
