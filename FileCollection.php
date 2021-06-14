@@ -2,13 +2,12 @@
 
 namespace BasicApp\Test;
 
+use Exception;
+use ReflectionClass;
+
 class FileCollection extends \CodeIgniter\HTTP\Files\FileCollection
 {
 
-    /**
-     * Taking information from the array, it creates an instance
-     * of UploadedFile for each one, saving the results to this->files.
-     */
     public function populateFromArray(array $files)
     {
         if (is_array($this->files))
@@ -30,5 +29,71 @@ class FileCollection extends \CodeIgniter\HTTP\Files\FileCollection
             $this->files[$name] = $this->createFileObject($file);
         }
     }
+
+    public function populateFromFiles(array $files, bool $setGlobalVar = false)
+    {
+        foreach($files as $key => $filename)
+        {
+            if (!is_file($filename))
+            {
+                throw new Exception('File not found: ' . $filename);
+            }
+
+            $files[$key] = [
+                'name' => basename($filename),
+                'type' => mime_content_type($filename),
+                'tmp_name' => $filename,
+                'error' => 0,
+                'size' => filesize($filename)
+            ];
+        }
+
+        if ($setGlobalVar)
+        {
+            $_FILES = $files;
+        }
+
+        return $this->populateFromArray($files);
+    }
+
+    public function assignToRequest(\CodeIgniter\Http\Request $request)
+    {
+        $reflection = new ReflectionClass($request);
+        
+        $property = $reflection->getProperty('files');
+        $property->setAccessible(true);
+        $property->setValue($request, $this);
+
+        return $this;
+    }
+
+    protected function createFileObject(array $array)
+    {
+        if (! isset($array['name']))
+        {
+            $output = [];
+
+            foreach ($array as $key => $values)
+            {
+                if (! is_array($values))
+                {
+                    continue;
+                }
+
+                $output[$key] = $this->createFileObject($values);
+            }
+
+            return $output;
+        }
+
+        return new UploadedFile(
+                $array['tmp_name'] ?? null, 
+                $array['name'] ?? null, 
+                $array['type'] ?? null, 
+                $array['size'] ?? null, 
+                $array['error'] ?? null
+        );
+    }
+
 
 }
