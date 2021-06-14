@@ -99,5 +99,4 @@ class FileCollection extends \CodeIgniter\HTTP\Files\FileCollection
         );
     }
 
-
 }
