@@ -30,32 +30,15 @@ trait TestTrait
         return $this;
     }
 
-    public function withFILES(array $files/*, bool $append = false*/)
+    public function withFILES(array $files, bool $setGlobals = false)
     {
-        /*
-        $request = $this->request;
-
-        if (!$request || !$append)
-        {
-            $request = new IncomingRequest(
-                new AppConfig,
-                new URI($this->appConfig->baseURL ?? 'http://example.com/'),
-                $this->body,
-                new UserAgent
-            );            
-        }
-        */
-
         $collection = new FileCollection;
 
-        $collection->populateFromArray($files);
+        $collection->populateFromFiles($files, $setGlobals);
 
-        $reflection = new ReflectionClass($this->request);
-        $property = $reflection->getProperty('files');
-        $property->setAccessible(true);
-        $property->setValue($this->request, $collection);
-
-        return $this->withRequest($this->request);
+        $collection->assignToRequest($this->request);
+    
+        return $this;
     }
 
     public function withPOST(array $data/*, bool $append = false*/)
