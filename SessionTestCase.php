@@ -6,6 +6,6 @@
  */
 namespace BasicApp\Test;
 
-class SessionTestCase extends CIUnitTestCase
+class SessionTestCase extends \CodeIgniter\Test\CIUnitTestCase
 {
 }
